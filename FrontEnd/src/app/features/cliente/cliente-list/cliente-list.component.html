@@ -1,0 +1,168 @@
+<div class="cliente-list">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Gestión de Clientes</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">
+        Nuevo Cliente
+      </button>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar por nombre..."
+              [(ngModel)]="filters.nombre"
+              (input)="onFilterChange()"
+            >
+          </div>
+          <div class="col-md-3">
+            <select 
+              class="form-control" 
+              [(ngModel)]="filters.activo"
+              (change)="onFilterChange()"
+            >
+              <option value="">Todos los estados</option>
+              <option value="true">Activas</option>
+              <option value="false">Inactivas</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de categorías -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Telefono</th>
+              <th>Fecha Creación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="6" class="text-center">Cargando...</td>
+            </tr>
+            <tr *ngIf="!loading && clientes.length === 0">
+              <td colspan="6" class="text-center">No hay clientes disponibles</td>
+            </tr>
+            <tr *ngFor="let cliente of clientes">
+              <td>{{ cliente.id }}</td>
+              <td>{{ cliente.nombre }}</td>
+              <td>{{ cliente.email || '-' }}</td>
+              <td>
+                <span class="badge" [class.badge-success]="cliente.activo" [class.badge-danger]="!cliente.activo">
+                  {{ cliente.activo ? 'Activo' : 'Inactiva' }}
+                </span>
+              </td>
+              <td>{{ cliente.fecha_creacion | date:'short' }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="editCliente(cliente)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteCliente(cliente)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination mt-3" *ngIf="totalPages > 1">
+        <button 
+          class="btn btn-secondary" 
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          Anterior
+        </button>
+        <span class="mx-3">
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
+        <button 
+          class="btn btn-secondary" 
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear/editar categoría -->
+  <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ editingCliente ? 'Editar Cliente' : 'Nuevo Cliente' }}</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveCliente()">
+            <div class="form-group">
+              <label for="nombre">Nombre *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="nombre" 
+                [(ngModel)]="clienteForm.nombre" 
+                name="nombre"
+                required
+                placeholder="Ingrese el nombre del cliente"
+              >
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <textarea 
+                class="form-control" 
+                id="email" 
+                [(ngModel)]="clienteForm.email" 
+                name="email"
+                rows="3"
+                placeholder="Ingrese un email"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  id="activo" 
+                  [(ngModel)]="clienteForm.activo" 
+                  name="activo"
+                >
+                <label class="form-check-label" for="activo">
+                  Cliente activo
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="saveCliente()">
+            {{ editingCliente ? 'Actualizar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
