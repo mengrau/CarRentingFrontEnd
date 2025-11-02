@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { PaginationParams } from '../models/api-response.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   private readonly baseUrl = environment.apiUrl;
@@ -18,7 +18,7 @@ export class ApiService {
   get<T>(endpoint: string, params?: any): Observable<T> {
     let httpParams = new HttpParams();
     if (params) {
-      Object.keys(params).forEach(key => {
+      Object.keys(params).forEach((key) => {
         if (params[key] !== null && params[key] !== undefined) {
           httpParams = httpParams.set(key, params[key].toString());
         }
@@ -32,22 +32,27 @@ export class ApiService {
    */
   getPaginated<T>(endpoint: string, pagination: PaginationParams, filters?: any): Observable<T[]> {
     let httpParams = new HttpParams();
-    
-    // Agregar parámetros de paginación
-    httpParams = httpParams.set('skip', pagination.page.toString());
-    httpParams = httpParams.set('limit', pagination.limit.toString());
-    
+
+    // calcular skip correctamente:
+    const page = pagination.page ?? 1; // por defecto 1 si viene undefined
+    const limit = pagination.limit ?? 10; // por defecto 10
+    // asume que page es 1-based. Si en tu app page es 0-based, usa page * limit
+    const skip = Math.max(0, page - 1) * limit;
+
+    httpParams = httpParams.set('skip', skip.toString());
+    httpParams = httpParams.set('limit', limit.toString());
+
     if (pagination.sort) {
       httpParams = httpParams.set('sort', pagination.sort);
     }
-    
+
     if (pagination.order) {
       httpParams = httpParams.set('order', pagination.order);
     }
 
     // Agregar filtros
     if (filters) {
-      Object.keys(filters).forEach(key => {
+      Object.keys(filters).forEach((key) => {
         if (filters[key] !== null && filters[key] !== undefined) {
           httpParams = httpParams.set(key, filters[key].toString());
         }

@@ -10,6 +10,6 @@ import { CommonModule } from '@angular/common';
       <h1>Dashboard</h1>
       <p>Bienvenido al dashboard. Aquí pondrás gráficos, KPIs y resúmenes.</p>
     </section>
-  `
+  `,
 })
 export class DashboardComponent {}

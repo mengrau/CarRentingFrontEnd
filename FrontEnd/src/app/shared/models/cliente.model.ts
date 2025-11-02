@@ -6,7 +6,10 @@ export interface Cliente {
   id: string; // Alias for id_categoria for frontend compatibility
   nombre: string;
   email: string;
+  telefono: string;
   activo: boolean; // Status field
+  id_usuario_creacion: string;
+  id_usuario_edicion: string;
   fecha_creacion: string;
   fecha_edicion?: string;
 }
@@ -17,6 +20,9 @@ export interface Cliente {
 export interface CreateClienteRequest {
   nombre: string;
   email: string;
+  telefono: string;
+  id_usuario_creacion: string;
+  id_usuario_edicion?: string;
 }
 
 /**

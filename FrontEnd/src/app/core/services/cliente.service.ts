@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Cliente, ClienteFilters, CreateClienteRequest, UpdateClienteRequest } from '../../shared/models/cliente.model';
+import {
+  Cliente,
+  ClienteFilters,
+  CreateClienteRequest,
+  UpdateClienteRequest,
+} from '../../shared/models/cliente.model';
 import { PaginationParams } from '../models/api-response.model';
 import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ClienteService {
-  private readonly endpoint = '/clientes';
+  private readonly endpoint = '/Clientes';
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   /**
    * Obtiene todas las categorías con paginación

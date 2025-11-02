@@ -4,11 +4,11 @@
 $width-expanded: 260px;
 $width-collapsed: 72px;
 $bg-start: #0f1724; // oscuro
-$bg-end: #111827;   // más oscuro
-$accent: #06b6d4;   // cian
+$bg-end: #111827; // más oscuro
+$accent: #06b6d4; // cian
 $text-muted: #9ca3af;
 $radius: 12px;
-$transition: 250ms cubic-bezier(.2,.9,.3,1);
+$transition: 250ms cubic-bezier(0.2, 0.9, 0.3, 1);
 
 // Base
 .sidebar {
@@ -24,9 +24,12 @@ $transition: 250ms cubic-bezier(.2,.9,.3,1);
 
   background: linear-gradient(180deg, $bg-start 0%, $bg-end 100%);
   color: #e6eef6;
-  box-shadow: 6px 0 18px rgba(2,6,23,0.5);
+  box-shadow: 6px 0 18px rgba(2, 6, 23, 0.5);
   border-radius: 0 $radius $radius 0;
-  transition: width $transition, min-width $transition, background $transition;
+  transition:
+    width $transition,
+    min-width $transition,
+    background $transition;
   overflow: hidden;
 
   // make room for shadow overlay when content scrolls
@@ -73,21 +76,21 @@ $transition: 250ms cubic-bezier(.2,.9,.3,1);
     width: 44px;
     height: 44px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
     font-size: 1.05rem;
     color: $accent;
-    box-shadow: inset 0 -2px 6px rgba(0,0,0,0.4);
+    box-shadow: inset 0 -2px 6px rgba(0, 0, 0, 0.4);
   }
 
   .brand-text {
     display: flex;
     flex-direction: column;
     line-height: 1;
-    
+
     .name {
       font-weight: 700;
       letter-spacing: 0.2px;
@@ -105,19 +108,28 @@ $transition: 250ms cubic-bezier(.2,.9,.3,1);
   top: 10px;
   right: 8px;
   transform: translateX(50%);
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 999px;
   padding: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.03);
-  transition: background $transition, transform $transition;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition:
+    background $transition,
+    transform $transition;
 
-  &:hover { background: rgba(255,255,255,0.06); transform: translateX(50%) scale(1.02); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(50%) scale(1.02);
+  }
 
-  i { font-style: normal; color: $text-muted; font-size: 0.9rem; }
+  i {
+    font-style: normal;
+    color: $text-muted;
+    font-size: 0.9rem;
+  }
 }
 
 /* User block */
@@ -133,7 +145,7 @@ $transition: 250ms cubic-bezier(.2,.9,.3,1);
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,8 +156,14 @@ $transition: 250ms cubic-bezier(.2,.9,.3,1);
   .user-name {
     display: flex;
     flex-direction: column;
-    .name { font-weight: 600; font-size: 0.95rem; }
-    .role { font-size: 0.75rem; color: $text-muted; }
+    .name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .role {
+      font-size: 0.75rem;
+      color: $text-muted;
+    }
   }
 }
 
@@ -179,7 +197,10 @@ nav a {
   color: #dbe9f2;
   padding: 0.55rem 0.6rem;
   border-radius: 8px;
-  transition: background $transition, transform $transition, color $transition;
+  transition:
+    background $transition,
+    transform $transition,
+    color $transition;
   font-size: 0.95rem;
 
   // optional icon placeholder element
@@ -190,31 +211,39 @@ nav a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
     color: $text-muted;
     font-size: 1rem;
   }
 
-  .label { flex: 1; }
+  .label {
+    flex: 1;
+  }
 
   &:hover {
-    background: rgba(6,182,212,0.08);
+    background: rgba(6, 182, 212, 0.08);
     color: #fff;
     transform: translateX(4px);
-    .icon { color: $accent; background: rgba(6,182,212,0.06); }
+    .icon {
+      color: $accent;
+      background: rgba(6, 182, 212, 0.06);
+    }
   }
 
   &.active {
-    background: linear-gradient(90deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.12), rgba(6, 182, 212, 0.06));
     color: #fff;
     box-shadow: inset 3px 0 0 $accent;
-    .icon { color: $accent; background: rgba(255,255,255,0.02); }
+    .icon {
+      color: $accent;
+      background: rgba(255, 255, 255, 0.02);
+    }
   }
 }
 
 /* Badge small (optional) */
 .badge {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   color: #fff;
   font-size: 0.75rem;
   padding: 0.15rem 0.45rem;
@@ -230,7 +259,7 @@ nav::-webkit-scrollbar-track {
   background: transparent;
 }
 nav::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: padding-box;

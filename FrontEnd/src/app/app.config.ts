@@ -12,5 +12,5 @@ export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 
 /** Valor concreto de la configuración (cambia según dev/prod). */
 export const APP_CONFIG_VALUE: AppConfig = {
-  apiBase: 'http://localhost:8000/api'
+  apiBase: 'http://localhost:8000/api',
 };

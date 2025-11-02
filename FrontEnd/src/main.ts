@@ -11,6 +11,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ]
-}).catch(err => console.error(err));
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
+}).catch((err) => console.error(err));
