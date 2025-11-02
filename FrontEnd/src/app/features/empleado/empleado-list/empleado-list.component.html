@@ -1,0 +1,289 @@
+<div class="empleado-list">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="card-title">Gestión de Empleados</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Empleado</button>
+    </div>
+
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre..."
+              [(ngModel)]="filters.nombre"
+              (input)="onFilterChange()"
+            />
+          </div>
+          <div class="col-md-3">
+            <select class="form-control" [(ngModel)]="filters.activo" (change)="onFilterChange()">
+              <option value="">Todos los estados</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de empleados -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Activo</th>
+              <th>Fecha creación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="7" class="text-center">Cargando...</td>
+            </tr>
+            <tr *ngIf="!loading && empleados.length === 0">
+              <td colspan="7" class="text-center">No hay empleados disponibles</td>
+            </tr>
+            <tr *ngFor="let empleado of empleadosFiltrados">
+              <td>{{ empleado.id || empleado.id_empleado }}</td>
+              <td>{{ empleado.nombre }}</td>
+              <td>{{ empleado.email || '-' }}</td>
+              <td>{{ empleado.rol || '-' }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-success]="empleado.activo"
+                  [class.badge-danger]="!empleado.activo"
+                >
+                  {{ empleado.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>{{ empleado.fecha_creacion ? (empleado.fecha_creacion | date:'short') : '-' }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(empleado)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteEmpleado(empleado)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination mt-3" *ngIf="totalPages > 1">
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          Anterior
+        </button>
+        <span class="mx-3"> Página {{ currentPage }} de {{ totalPages }} </span>
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear empleado -->
+  <div
+    class="modal fade"
+    [class.show]="showCreateModal"
+    [style.display]="showCreateModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Empleado</h5>
+          <button type="button" class="close" (click)="closeModalCreate()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="createEmpleado()">
+            <div class="form-group">
+              <label for="nombreCreate">Nombre *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nombreCreate"
+                [(ngModel)]="empleadoFormCreate.nombre"
+                name="nombreCreate"
+                required
+                placeholder="Ingrese el nombre"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="emailCreate">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="emailCreate"
+                [(ngModel)]="empleadoFormCreate.email"
+                name="emailCreate"
+                placeholder="Ingrese el email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rolCreate">Rol</label>
+              <input
+                type="text"
+                class="form-control"
+                id="rolCreate"
+                [(ngModel)]="empleadoFormCreate.rol"
+                name="rolCreate"
+                placeholder="Ingrese el rol"
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="activoCreate"
+                  [(ngModel)]="empleadoFormCreate.activo"
+                  name="activoCreate"
+                />
+                <label class="form-check-label" for="activoCreate">Empleado activo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioCreacion">ID Usuario creación</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioCreacion"
+                [(ngModel)]="empleadoFormCreate.id_usuario_creacion"
+                name="idUsuarioCreacion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar empleado -->
+  <div
+    class="modal fade"
+    [class.show]="showEditModal"
+    [style.display]="showEditModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Empleado</h5>
+          <button type="button" class="close" (click)="closeModalEdit()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="updateEmpleado()">
+            <div class="form-group">
+              <label for="nombreEdit">Nombre *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nombreEdit"
+                [(ngModel)]="empleadoFormEdit.nombre"
+                name="nombreEdit"
+                required
+                placeholder="Ingrese el nombre"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="emailEdit">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="emailEdit"
+                [(ngModel)]="empleadoFormEdit.email"
+                name="emailEdit"
+                placeholder="Ingrese el email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rolEdit">Rol</label>
+              <input
+                type="text"
+                class="form-control"
+                id="rolEdit"
+                [(ngModel)]="empleadoFormEdit.rol"
+                name="rolEdit"
+                placeholder="Ingrese el rol"
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="activoEdit"
+                  [(ngModel)]="empleadoFormEdit.activo"
+                  name="activoEdit"
+                />
+                <label class="form-check-label" for="activoEdit">Empleado activo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioEdicion">ID Usuario edición</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioEdicion"
+                [(ngModel)]="empleadoFormEdit.id_usuario_edicion"
+                name="idUsuarioEdicion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalEdit()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
