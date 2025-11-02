@@ -1,0 +1,343 @@
+<div class="contrato-list">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="card-title">Gestión de Contratos</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Contrato</button>
+    </div>
+
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por ID..."
+              [(ngModel)]="filters.id"
+              (input)="onFilterChange()"
+            />
+          </div>
+          <div class="col-md-3">
+            <select class="form-control" [(ngModel)]="filters.activo" (change)="onFilterChange()">
+              <option value="">Todos los estados</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de contratos -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente ID</th>
+              <th>Vehículo ID</th>
+              <th>Empleado ID</th>
+              <th>Fecha inicio</th>
+              <th>Fecha fin</th>
+              <th>Activo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="8" class="text-center">Cargando...</td>
+            </tr>
+            <tr *ngIf="!loading && contratos.length === 0">
+              <td colspan="8" class="text-center">No hay contratos disponibles</td>
+            </tr>
+            <tr *ngFor="let contrato of contratosFiltrados">
+              <td>{{ contrato.id }}</td>
+              <td>{{ contrato.cliente_id || '-' }}</td>
+              <td>{{ contrato.vehiculo_id || '-' }}</td>
+              <td>{{ contrato.empleado_id || '-' }}</td>
+              <td>{{ contrato.fecha_inicio ? (contrato.fecha_inicio | date:'short') : '-' }}</td>
+              <td>{{ contrato.fecha_fin ? (contrato.fecha_fin | date:'short') : '-' }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-success]="contrato.activo"
+                  [class.badge-danger]="!contrato.activo"
+                >
+                  {{ contrato.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(contrato)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteContrato(contrato)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination mt-3" *ngIf="totalPages > 1">
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          Anterior
+        </button>
+        <span class="mx-3"> Página {{ currentPage }} de {{ totalPages }} </span>
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear contrato -->
+  <div
+    class="modal fade"
+    [class.show]="showCreateModal"
+    [style.display]="showCreateModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Contrato</h5>
+          <button type="button" class="close" (click)="closeModalCreate()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="createContrato()">
+            <div class="form-group">
+              <label for="clienteIdCreate">Cliente ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="clienteIdCreate"
+                [(ngModel)]="contratoFormCreate.cliente_id"
+                name="clienteIdCreate"
+                required
+                placeholder="ID del cliente"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="vehiculoIdCreate">Vehículo ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="vehiculoIdCreate"
+                [(ngModel)]="contratoFormCreate.vehiculo_id"
+                name="vehiculoIdCreate"
+                required
+                placeholder="ID del vehículo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="empleadoIdCreate">Empleado ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="empleadoIdCreate"
+                [(ngModel)]="contratoFormCreate.empleado_id"
+                name="empleadoIdCreate"
+                required
+                placeholder="ID del empleado"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="fechaInicioCreate">Fecha inicio *</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fechaInicioCreate"
+                  [(ngModel)]="contratoFormCreate.fecha_inicio"
+                  name="fechaInicioCreate"
+                  required
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="fechaFinCreate">Fecha fin</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fechaFinCreate"
+                  [(ngModel)]="contratoFormCreate.fecha_fin"
+                  name="fechaFinCreate"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="activoCreate"
+                  [(ngModel)]="contratoFormCreate.activo"
+                  name="activoCreate"
+                />
+                <label class="form-check-label" for="activoCreate">Contrato activo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioCreacion">ID Usuario creación</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioCreacion"
+                [(ngModel)]="contratoFormCreate.id_usuario_creacion"
+                name="idUsuarioCreacion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar contrato -->
+  <div
+    class="modal fade"
+    [class.show]="showEditModal"
+    [style.display]="showEditModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Contrato</h5>
+          <button type="button" class="close" (click)="closeModalEdit()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="updateContrato()">
+            <div class="form-group">
+              <label for="clienteIdEdit">Cliente ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="clienteIdEdit"
+                [(ngModel)]="contratoFormEdit.cliente_id"
+                name="clienteIdEdit"
+                required
+                placeholder="ID del cliente"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="vehiculoIdEdit">Vehículo ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="vehiculoIdEdit"
+                [(ngModel)]="contratoFormEdit.vehiculo_id"
+                name="vehiculoIdEdit"
+                required
+                placeholder="ID del vehículo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="empleadoIdEdit">Empleado ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="empleadoIdEdit"
+                [(ngModel)]="contratoFormEdit.empleado_id"
+                name="empleadoIdEdit"
+                required
+                placeholder="ID del empleado"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="fechaInicioEdit">Fecha inicio *</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fechaInicioEdit"
+                  [(ngModel)]="contratoFormEdit.fecha_inicio"
+                  name="fechaInicioEdit"
+                  required
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="fechaFinEdit">Fecha fin</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fechaFinEdit"
+                  [(ngModel)]="contratoFormEdit.fecha_fin"
+                  name="fechaFinEdit"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="activoEdit"
+                  [(ngModel)]="contratoFormEdit.activo"
+                  name="activoEdit"
+                />
+                <label class="form-check-label" for="activoEdit">Contrato activo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioEdicion">ID Usuario edición</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioEdicion"
+                [(ngModel)]="contratoFormEdit.id_usuario_edicion"
+                name="idUsuarioEdicion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalEdit()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
