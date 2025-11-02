@@ -1,8 +1,8 @@
-<div class="cliente-list">
+<div class="empleado-list">
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h2 class="card-title">Gestión de Clientes</h2>
-      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Cliente</button>
+      <h2 class="card-title">Gestión de Empleados</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Empleado</button>
     </div>
 
     <div class="card-body">
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <!-- Tabla de categorías -->
+      <!-- Tabla de empleados -->
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -39,39 +39,39 @@
               <th>ID</th>
               <th>Nombre</th>
               <th>Email</th>
-              <th>Telefono</th>
+              <th>Rol</th>
               <th>Activo</th>
-              <th>Fecha Creación</th>
+              <th>Fecha creación</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngIf="loading">
-              <td colspan="6" class="text-center">Cargando...</td>
+              <td colspan="7" class="text-center">Cargando...</td>
             </tr>
-            <tr *ngIf="!loading && clientes.length === 0">
-              <td colspan="6" class="text-center">No hay clientes disponibles</td>
+            <tr *ngIf="!loading && empleados.length === 0">
+              <td colspan="7" class="text-center">No hay empleados disponibles</td>
             </tr>
-            <tr *ngFor="let cliente of clientesFiltrados">
-              <td>{{ cliente.id }}</td>
-              <td>{{ cliente.nombre }}</td>
-              <td>{{ cliente.email || '-' }}</td>
-              <td>{{ cliente.telefono }}</td>
+            <tr *ngFor="let empleado of empleadosFiltrados">
+              <td>{{ empleado.id || empleado.id_empleado }}</td>
+              <td>{{ empleado.nombre }}</td>
+              <td>{{ empleado.email || '-' }}</td>
+              <td>{{ empleado.rol || '-' }}</td>
               <td>
                 <span
                   class="badge"
-                  [class.badge-success]="cliente.activo"
-                  [class.badge-danger]="!cliente.activo"
+                  [class.badge-success]="empleado.activo"
+                  [class.badge-danger]="!empleado.activo"
                 >
-                  {{ cliente.activo ? 'Activo' : 'Inactivo' }}
+                  {{ empleado.activo ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td>{{ cliente.fecha_creacion | date: 'short' }}</td>
+              <td>{{ empleado.fecha_creacion ? (empleado.fecha_creacion | date:'short') : '-' }}</td>
               <td>
-                <button class="btn btn-sm btn-primary" (click)="openEditModal(cliente)">
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(empleado)">
                   Editar
                 </button>
-                <button class="btn btn-sm btn-danger" (click)="deleteCliente(cliente)">
+                <button class="btn btn-sm btn-danger" (click)="deleteEmpleado(empleado)">
                   Eliminar
                 </button>
               </td>
@@ -101,8 +101,7 @@
     </div>
   </div>
 
-  <!-- Modal para crear/editar categoría -->
-  <!-- ===== MODAL CREAR ===== -->
+  <!-- Modal para crear empleado -->
   <div
     class="modal fade"
     [class.show]="showCreateModal"
@@ -113,61 +112,74 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Nuevo Cliente</h5>
+          <h5 class="modal-title">Nuevo Empleado</h5>
           <button type="button" class="close" (click)="closeModalCreate()">
             <span>&times;</span>
           </button>
         </div>
 
         <div class="modal-body">
-          <form (ngSubmit)="createCliente()">
+          <form (ngSubmit)="createEmpleado()">
             <div class="form-group">
               <label for="nombreCreate">Nombre *</label>
               <input
                 type="text"
                 class="form-control"
                 id="nombreCreate"
-                [(ngModel)]="clienteFormCreate.nombre"
+                [(ngModel)]="empleadoFormCreate.nombre"
                 name="nombreCreate"
                 required
-                placeholder="Ingrese el nombre del cliente"
+                placeholder="Ingrese el nombre"
               />
             </div>
 
             <div class="form-group">
               <label for="emailCreate">Email</label>
-              <textarea
+              <input
+                type="email"
                 class="form-control"
                 id="emailCreate"
-                [(ngModel)]="clienteFormCreate.email"
+                [(ngModel)]="empleadoFormCreate.email"
                 name="emailCreate"
-                rows="3"
-                placeholder="Ingrese un email"
-              ></textarea>
+                placeholder="Ingrese el email"
+              />
             </div>
 
             <div class="form-group">
-              <label for="telefonoCreate">Teléfono</label>
-              <textarea
+              <label for="rolCreate">Rol</label>
+              <input
+                type="text"
                 class="form-control"
-                id="telefonoCreate"
-                [(ngModel)]="clienteFormCreate.telefono"
-                name="telefonoCreate"
-                rows="3"
-                placeholder="Ingrese un teléfono"
-              ></textarea>
+                id="rolCreate"
+                [(ngModel)]="empleadoFormCreate.rol"
+                name="rolCreate"
+                placeholder="Ingrese el rol"
+              />
             </div>
 
             <div class="form-group">
-              <label for="id_usuario_creacion">ID Usuario creación</label>
-              <textarea
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="activoCreate"
+                  [(ngModel)]="empleadoFormCreate.activo"
+                  name="activoCreate"
+                />
+                <label class="form-check-label" for="activoCreate">Empleado activo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioCreacion">ID Usuario creación</label>
+              <input
+                type="text"
                 class="form-control"
-                id="id_usuario_creacion"
-                [(ngModel)]="clienteFormCreate.id_usuario_creacion"
-                name="id_usuario_creacion"
-                rows="2"
+                id="idUsuarioCreacion"
+                [(ngModel)]="empleadoFormCreate.id_usuario_creacion"
+                name="idUsuarioCreacion"
                 readonly
-              ></textarea>
+              />
             </div>
 
             <div class="modal-footer">
@@ -182,7 +194,7 @@
     </div>
   </div>
 
-  <!-- ===== MODAL EDITAR ===== -->
+  <!-- Modal para editar empleado -->
   <div
     class="modal fade"
     [class.show]="showEditModal"
@@ -193,52 +205,50 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Editar Cliente</h5>
+          <h5 class="modal-title">Editar Empleado</h5>
           <button type="button" class="close" (click)="closeModalEdit()">
             <span>&times;</span>
           </button>
         </div>
 
         <div class="modal-body">
-          <form (ngSubmit)="updateCliente()">
+          <form (ngSubmit)="updateEmpleado()">
             <div class="form-group">
               <label for="nombreEdit">Nombre *</label>
               <input
                 type="text"
                 class="form-control"
                 id="nombreEdit"
-                [(ngModel)]="clienteFormEdit.nombre"
+                [(ngModel)]="empleadoFormEdit.nombre"
                 name="nombreEdit"
                 required
-                placeholder="Ingrese el nombre del cliente"
+                placeholder="Ingrese el nombre"
               />
             </div>
 
             <div class="form-group">
-              <label for="emailEdit">Email *</label>
-              <textarea
+              <label for="emailEdit">Email</label>
+              <input
+                type="email"
                 class="form-control"
                 id="emailEdit"
-                [(ngModel)]="clienteFormEdit.email"
+                [(ngModel)]="empleadoFormEdit.email"
                 name="emailEdit"
-                rows="3"
-                placeholder="Ingrese un email"
-              ></textarea>
+                placeholder="Ingrese el email"
+              />
             </div>
 
             <div class="form-group">
-              <label for="telefonoEdit">Teléfono</label>
-              <textarea
+              <label for="rolEdit">Rol</label>
+              <input
+                type="text"
                 class="form-control"
-                id="telefonoEdit"
-                [(ngModel)]="clienteFormEdit.telefono"
-                name="telefonoEdit"
-                rows="3"
-                placeholder="Ingrese un teléfono"
-              ></textarea>
+                id="rolEdit"
+                [(ngModel)]="empleadoFormEdit.rol"
+                name="rolEdit"
+                placeholder="Ingrese el rol"
+              />
             </div>
-
-            <!-- Campo exclusivo de edición -->
 
             <div class="form-group">
               <div class="form-check">
@@ -246,23 +256,23 @@
                   type="checkbox"
                   class="form-check-input"
                   id="activoEdit"
-                  [(ngModel)]="clienteFormEdit.activo"
+                  [(ngModel)]="empleadoFormEdit.activo"
                   name="activoEdit"
                 />
-                <label class="form-check-label" for="activoEdit">Cliente activo</label>
+                <label class="form-check-label" for="activoEdit">Empleado activo</label>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="id_usuario_edicion">ID Usuario edición</label>
-              <textarea
+              <label for="idUsuarioEdicion">ID Usuario edición</label>
+              <input
+                type="text"
                 class="form-control"
-                id="id_usuario_edicion"
-                [(ngModel)]="clienteFormEdit.id_usuario_edicion"
-                name="id_usuario_edicion"
-                rows="2"
+                id="idUsuarioEdicion"
+                [(ngModel)]="empleadoFormEdit.id_usuario_edicion"
+                name="idUsuarioEdicion"
                 readonly
-              ></textarea>
+              />
             </div>
 
             <div class="modal-footer">

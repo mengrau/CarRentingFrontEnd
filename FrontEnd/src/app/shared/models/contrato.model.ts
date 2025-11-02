@@ -1,15 +1,17 @@
 /**
  * Modelo para la entidad Categoría
  */
-export interface Cliente {
-  id_cliente: string; // UUID
+export interface Contrato {
+  id_contrato: string; // UUID
   id: string; // Alias for id_categoria for frontend compatibility
-  nombre: string;
-  email: string;
-  telefono: string;
+  cliente_id: string;
+  vehiculo_id: string;
+  empleado_id: string;
+  fecha_inicio: string;
+  fecha_fin?: string;
   activo: boolean; // Status field
   id_usuario_creacion: string;
-  id_usuario_edicion: string;
+  id_usuario_edicion?: string;
   fecha_creacion: string;
   fecha_edicion?: string;
 }
@@ -17,27 +19,31 @@ export interface Cliente {
 /**
  * Modelo para crear una nueva categoría
  */
-export interface CreateClienteRequest {
-  nombre: string;
-  email: string;
-  telefono: string;
+export interface CreateContratoRequest {
+  cliente_id: string;
+  vehiculo_id: string;
+  empleado_id: string;
+  fecha_inicio: string;
+  fecha_fin?: string;
   id_usuario_creacion: string;
 }
 
 /**
  * Modelo para actualizar una categoría
  */
-export interface UpdateClienteRequest {
-  nombre?: string;
-  email?: string;
-  telefono?: string;
+export interface UpdateContratoRequest {
+  cliente_id?: string;
+  vehiculo_id?: string;
+  empleado_id?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
   id_usuario_edicion: string;
 }
 
 /**
  * Modelo para filtros de categorías
  */
-export interface ClienteFilters {
+export interface ContratoFilters {
   nombre?: string;
   activo?: boolean; // Status filter
 }
@@ -45,8 +51,8 @@ export interface ClienteFilters {
 /**
  * Modelo para respuesta paginada de categorías
  */
-export interface ClienteListResponse {
-  data: Cliente[];
+export interface ContratoListResponse {
+  data: Contrato[];
   totalPages: number;
   currentPage: number;
   totalItems: number;

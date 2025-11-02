@@ -22,5 +22,21 @@ export const routes: Routes = [
         (m) => m.ClienteListComponent,
       ),
   },
+  {
+    path: 'contrato',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/contrato/contrato-list/contrato-list.component').then(
+        (m) => m.ContratoListComponent,
+      ),
+  },
+  {
+    path: 'empleado',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/empleado/empleado-list/empleado-list.component').then(
+        (m) => m.EmpleadoListComponent,
+      ),
+  },
   { path: '**', redirectTo: 'login' },
 ];
