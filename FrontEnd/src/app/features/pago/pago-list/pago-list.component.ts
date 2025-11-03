@@ -63,9 +63,9 @@ export class PagoListComponent implements OnInit {
 
     this.pagoService.getPagos(pagination, filtersToSend).subscribe({
       next: (pagos) => {
-        this.pagos = Array.isArray(pagos) ? pagos : [];
-        this.pagosFiltrados = [...this.pagos];
-        this.totalPages = Math.max(1, Math.ceil(this.pagos.length / this.pageSize));
+        this.pagos = pagos;
+        this.pagosFiltrados = [...pagos];
+        this.totalPages = Math.ceil(this.pagos.length / this.pageSize);
         this.loading = false;
       },
       error: (error) => {
@@ -117,7 +117,7 @@ export class PagoListComponent implements OnInit {
     this.editingPago = pago;
     this.pagoFormEdit = {
       monto: pago.monto !== undefined ? String((pago as any).monto) : '',
-      fecha_pago: (pago as any).fecha_pago ?? '',
+      fecha_pago: pago.fecha_pago,
       id_usuario_edicion: localStorage.getItem('user_id') ?? '',
     };
     this.showEditModal = true;

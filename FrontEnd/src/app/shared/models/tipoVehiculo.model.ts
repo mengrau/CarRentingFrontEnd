@@ -18,7 +18,7 @@ export interface TipoVehiculo {
  */
 export interface CreateTipoVehiculoRequest {
   nombre: string;
-  descripcion: number;
+  descripcion: string;
   activo: boolean;
   id_usuario_creacion: string;
 }

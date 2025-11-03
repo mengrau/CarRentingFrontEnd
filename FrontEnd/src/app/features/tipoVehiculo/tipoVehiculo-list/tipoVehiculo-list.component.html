@@ -7,20 +7,24 @@
 
     <div class="card-body">
       <!-- Filtros -->
-      <div class="filters mb-5">
+      <div class="filters mb-3">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <input
               type="text"
               class="form-control"
-              placeholder="Buscar por ID o Nombre..."
-              [(ngModel)]="filters.query"
+              placeholder="Buscar por nombre..."
+              [(ngModel)]="filters.nombre"
               (input)="onFilterChange()"
-              (keyup.enter)="onFilterChange()"
-              name="globalSearch"
             />
           </div>
-
+          <div class="col-md-3">
+            <select class="form-control" [(ngModel)]="filters.activo" (change)="onFilterChange()">
+              <option value="">Todos los estados</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
           <div class="col-md-2">
             <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">Limpiar</button>
           </div>
@@ -35,7 +39,6 @@
               <th>ID</th>
               <th>Nombre</th>
               <th>Descripción</th>
-              <th>Tarifa</th>
               <th>Activo</th>
               <th>Acciones</th>
             </tr>
@@ -48,9 +51,9 @@
               <td colspan="6" class="text-center">No hay tipos de vehículo disponibles</td>
             </tr>
             <tr *ngFor="let tipo of tipoVehiculosFiltrados">
-              <td>{{ tipo.id ?? '-' }}</td>
+              <td>{{ tipo.id}}</td>
               <td>{{ tipo.nombre }}</td>
-              <td>{{ tipo.descripcion ?? '-' }}</td>
+              <td>{{ tipo.descripcion }}</td>
               <td>
                 <span
                   class="badge"
@@ -202,20 +205,6 @@
                 rows="2"
                 placeholder="Descripción (opcional)"
               ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="tarifaEdit">Tarifa *</label>
-              <input
-                type="number"
-                step="0.01"
-                class="form-control"
-                id="tarifaEdit"
-                [(ngModel)]="tipoVehiculoFormEdit.tarifa"
-                name="tarifaEdit"
-                required
-                placeholder="Valor de la tarifa"
-              />
             </div>
 
             <div class="form-group form-check">

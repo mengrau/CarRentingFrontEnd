@@ -29,7 +29,6 @@ export class TipoVehiculoListComponent implements OnInit {
   tipoVehiculoFormCreate = {
     nombre: '',
     descripcion: '',
-    tarifa: '',
     activo: true,
     id_usuario_creacion: '',
   };
@@ -37,73 +36,67 @@ export class TipoVehiculoListComponent implements OnInit {
   tipoVehiculoFormEdit = {
     nombre: '',
     descripcion: '',
-    tarifa: '',
     activo: true,
     id_usuario_edicion: '',
   };
 
   // Filtros: búsqueda por id o por nombre (una sola caja)
   // filtros (igual que en Cliente)
-filters = {
-  nombre: '',
-  activo: '',
-};
-
-constructor(private tipoVehiculoService: TipoVehiculoService) {}
-
-ngOnInit(): void {
-  this.loadTipoVehiculos();
-}
-
-loadTipoVehiculos(): void {
-  this.loading = true;
-  const pagination: PaginationParams = {
-    page: this.currentPage,
-    limit: this.pageSize,
+  filters = {
+    nombre: '',
+    activo: '',
   };
 
-  // 👇 Conversión del filtro (mismo patrón que en Cliente)
-  const filtersToSend: any = {
-    nombre: this.filters.nombre,
-    activo: this.filters.activo === '' ? undefined : this.filters.activo === 'true',
-  };
+  constructor(private tipoVehiculoService: TipoVehiculoService) {}
 
-  this.tipoVehiculoService.getTipoVehiculos(pagination, filtersToSend).subscribe({
-    next: (tipoVehiculos) => {
-      this.tipoVehiculos = Array.isArray(tipoVehiculos) ? tipoVehiculos : [];
-      this.tipoVehiculosFiltrados = [...this.tipoVehiculos];
-      this.totalPages = Math.ceil(this.tipoVehiculos.length / this.pageSize);
-      this.loading = false;
-    },
-    error: (error) => {
-      console.error('Error al cargar tipos de vehículo:', error);
-      this.loading = false;
-    },
-  });
-}
+  ngOnInit(): void {
+    this.loadTipoVehiculos();
+  }
 
-onFilterChange(): void {
-  const nombre = (this.filters.nombre || '').toLowerCase();
-  const activo = this.filters.activo;
+  loadTipoVehiculos(): void {
+    this.loading = true;
+    const pagination: PaginationParams = {
+      page: this.currentPage,
+      limit: this.pageSize,
+    };
 
-  this.tipoVehiculosFiltrados = this.tipoVehiculos.filter((t) => {
-    const matchNombre = ((t as any).nombre || '').toLowerCase().includes(nombre);
-    const matchActivo =
-      activo === '' ? true : activo === 'true' ? (t as any).activo : !(t as any).activo;
-    return matchNombre && matchActivo;
-  });
+    // 👇 Conversión del filtro (mismo patrón que en Cliente)
+    const filtersToSend = {
+      nombre: this.filters.nombre,
+      activo: this.filters.activo === '' ? undefined : this.filters.activo === 'true',
+    };
 
-  // ajustar paginación local si corresponde
-  this.totalPages = Math.max(1, Math.ceil(this.tipoVehiculosFiltrados.length / this.pageSize));
-  this.currentPage = 1;
-}
+    this.tipoVehiculoService.getTipoVehiculos(pagination, filtersToSend).subscribe({
+      next: (tipoVehiculos) => {
+        console.log('Respuesta getTipoVehiculos:', tipoVehiculos);
+        this.tipoVehiculos = tipoVehiculos;
+        this.tipoVehiculosFiltrados = [...tipoVehiculos];
+        this.totalPages = Math.ceil(tipoVehiculos.length / this.pageSize);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar tipos de vehículo:', error);
+        this.loading = false;
+      },
+    });
+  }
 
-clearFilters() {
-  this.filters = { nombre: '', activo: '' };
-  this.tipoVehiculosFiltrados = [...this.tipoVehiculos];
-  this.totalPages = Math.max(1, Math.ceil(this.tipoVehiculosFiltrados.length / this.pageSize));
-  this.currentPage = 1;
-}
+  onFilterChange(): void {
+    const nombre = this.filters.nombre.toLowerCase();
+    const activo = this.filters.activo;
+
+    this.tipoVehiculosFiltrados = this.tipoVehiculos.filter((t) => {
+      const matchNombre = (t as any).nombre.toLowerCase().includes(nombre);
+      const matchActivo =
+        activo === '' ? true : activo === 'true' ? (t as any).activo : !(t as any).activo;
+      return matchNombre && matchActivo;
+    });
+  }
+
+  clearFilters() {
+    this.filters = { nombre: '', activo: '' };
+    this.tipoVehiculosFiltrados = [...this.tipoVehiculos];
+  }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
@@ -117,7 +110,6 @@ clearFilters() {
     this.tipoVehiculoFormCreate = {
       nombre: '',
       descripcion: '',
-      tarifa: '',
       activo: true,
       id_usuario_creacion: localStorage.getItem('user_id') ?? '',
     };
@@ -129,7 +121,6 @@ clearFilters() {
     this.tipoVehiculoFormEdit = {
       nombre: (tipoVehiculo as any).nombre ?? '',
       descripcion: (tipoVehiculo as any).descripcion ?? '',
-      tarifa: (tipoVehiculo as any).tarifa !== undefined ? String((tipoVehiculo as any).tarifa) : '',
       activo: (tipoVehiculo as any).activo ?? true,
       id_usuario_edicion: localStorage.getItem('user_id') ?? '',
     };
@@ -142,7 +133,6 @@ clearFilters() {
     this.tipoVehiculoFormCreate = {
       nombre: '',
       descripcion: '',
-      tarifa: '',
       activo: true,
       id_usuario_creacion: '',
     };
@@ -154,7 +144,6 @@ clearFilters() {
     this.tipoVehiculoFormEdit = {
       nombre: '',
       descripcion: '',
-      tarifa: '',
       activo: true,
       id_usuario_edicion: '',
     };
@@ -162,17 +151,14 @@ clearFilters() {
 
   // Crear nuevo tipoVehiculo
   createTipoVehiculo(): void {
-    if (!this.tipoVehiculoFormCreate.nombre || !this.tipoVehiculoFormCreate.tarifa) {
-      alert('Por favor complete los campos obligatorios (nombre, tarifa)');
+    if (!this.tipoVehiculoFormCreate.nombre) {
+      alert('Por favor complete los campos obligatorios (nombre)');
       return;
     }
 
     const newTipoVehiculo: any = {
       nombre: this.tipoVehiculoFormCreate.nombre,
       descripcion: this.tipoVehiculoFormCreate.descripcion,
-      tarifa: isNaN(Number(this.tipoVehiculoFormCreate.tarifa))
-        ? this.tipoVehiculoFormCreate.tarifa
-        : Number(this.tipoVehiculoFormCreate.tarifa),
       activo: this.tipoVehiculoFormCreate.activo,
       id_usuario_creacion: this.tipoVehiculoFormCreate.id_usuario_creacion,
     };
@@ -196,17 +182,14 @@ clearFilters() {
       return;
     }
 
-    if (!this.tipoVehiculoFormEdit.nombre || !this.tipoVehiculoFormEdit.tarifa) {
-      alert('Por favor complete los campos obligatorios (nombre, tarifa)');
+    if (!this.tipoVehiculoFormEdit.nombre) {
+      alert('Por favor complete los campos obligatorios (nombre)');
       return;
     }
 
     const updateData: any = {
       nombre: this.tipoVehiculoFormEdit.nombre,
       descripcion: this.tipoVehiculoFormEdit.descripcion,
-      tarifa: isNaN(Number(this.tipoVehiculoFormEdit.tarifa))
-        ? this.tipoVehiculoFormEdit.tarifa
-        : Number(this.tipoVehiculoFormEdit.tarifa),
       activo: this.tipoVehiculoFormEdit.activo,
       id_usuario_edicion: this.tipoVehiculoFormEdit.id_usuario_edicion,
     };
@@ -238,4 +221,3 @@ clearFilters() {
     }
   }
 }
-

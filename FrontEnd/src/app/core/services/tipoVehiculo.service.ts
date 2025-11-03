@@ -13,7 +13,7 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class TipoVehiculoService {
-  private readonly endpoint = '/TipoVehiculos';
+  private readonly endpoint = '/Tipos-de-Vehiculos';
 
   constructor(private apiService: ApiService) {}
 
