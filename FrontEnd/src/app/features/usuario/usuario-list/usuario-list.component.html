@@ -53,10 +53,10 @@
               <td>
                 <span
                   class="badge"
-                  [class.badge-success]="usuario.estado === 'activo'"
-                  [class.badge-danger]="usuario.estado === 'inactivo'"
+                  [class.badge-success]="usuario.estado"
+                  [class.badge-danger]="!usuario.estado"
                 >
-                  {{ usuario.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+                  {{ usuario.estado ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
               <td>
