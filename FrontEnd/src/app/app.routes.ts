@@ -54,5 +54,13 @@ export const routes: Routes = [
         (m) => m.TipoVehiculoListComponent,
       ),
   },
+  {
+    path: 'usuario',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/usuario/usuario-list/usuario-list.component').then(
+        (m) => m.UsuarioListComponent,
+      ),
+  },
   { path: '**', redirectTo: 'login' },
 ];

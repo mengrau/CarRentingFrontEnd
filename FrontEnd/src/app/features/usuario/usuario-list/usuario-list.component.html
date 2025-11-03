@@ -1,0 +1,278 @@
+<div class="usuario-list">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="card-title">Gestión de Usuarios</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Usuario</button>
+    </div>
+
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre de usuario..."
+              [(ngModel)]="filters.username"
+              (input)="onFilterChange()"
+            />
+          </div>
+
+          <div class="col-md-2">
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de usuarios -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="5" class="text-center">Cargando...</td>
+            </tr>
+            <tr *ngIf="!loading && usuariosFiltrados.length === 0">
+              <td colspan="5" class="text-center">No hay usuarios disponibles</td>
+            </tr>
+            <tr *ngFor="let usuario of usuariosFiltrados">
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.rol }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-success]="usuario.estado === 'activo'"
+                  [class.badge-danger]="usuario.estado === 'inactivo'"
+                >
+                  {{ usuario.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(usuario)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteUsuario(usuario)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination mt-3" *ngIf="totalPages > 1">
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          Anterior
+        </button>
+        <span class="mx-3">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear usuario -->
+  <div
+    class="modal fade"
+    [class.show]="showCreateModal"
+    [style.display]="showCreateModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Usuario</h5>
+          <button type="button" class="close" (click)="closeModalCreate()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="createUsuario()">
+            <div class="form-group">
+              <label for="usernameCreate">Username *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="usernameCreate"
+                [(ngModel)]="usuarioFormCreate.username"
+                name="usernameCreate"
+                required
+                placeholder="Nombre de usuario"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rolCreate">Rol</label>
+              <select
+                class="form-control"
+                id="rolCreate"
+                [(ngModel)]="usuarioFormCreate.rol"
+                name="rolCreate"
+              >
+                <option value="admin">Administrador</option>
+                <option value="empleado">Empleado</option>
+                <option value="cliente">Cliente</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="estadoCreate">Estado</label>
+              <select
+                class="form-control"
+                id="estadoCreate"
+                [(ngModel)]="usuarioFormCreate.estado"
+                name="estadoCreate"
+              >
+                <option value="">Seleccione</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioCreacion">ID Usuario (creación)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioCreacion"
+                [(ngModel)]="usuarioFormCreate.id_usuario_creacion"
+                name="idUsuarioCreacion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar usuario -->
+  <div
+    class="modal fade"
+    [class.show]="showEditModal"
+    [style.display]="showEditModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Usuario</h5>
+          <button type="button" class="close" (click)="closeModalEdit()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="updateUsuario()">
+            <div class="form-group">
+              <label for="usernameEdit">Username *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="usernameEdit"
+                [(ngModel)]="usuarioFormEdit.username"
+                name="usernameEdit"
+                required
+                placeholder="Nombre de usuario"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="passwordEdit">Contraseña (opcional)</label>
+              <input
+                type="password"
+                class="form-control"
+                id="passwordEdit"
+                [(ngModel)]="usuarioFormEdit.password"
+                name="passwordEdit"
+                placeholder="Nueva contraseña"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rolEdit">Rol</label>
+              <select
+                class="form-control"
+                id="rolEdit"
+                [(ngModel)]="usuarioFormEdit.rol"
+                name="rolEdit"
+              >
+                <option value="admin">Administrador</option>
+                <option value="empleado">Empleado</option>
+                <option value="cliente">Cliente</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="estadoEdit">Estado</label>
+              <select
+                class="form-control"
+                id="estadoEdit"
+                [(ngModel)]="usuarioFormEdit.estado"
+                name="estadoEdit"
+              >
+                <option value="">Seleccione</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="idUsuarioEdicion">ID Usuario (edición)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idUsuarioEdicion"
+                [(ngModel)]="usuarioFormEdit.id_usuario_edicion"
+                name="idUsuarioEdicion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalEdit()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
