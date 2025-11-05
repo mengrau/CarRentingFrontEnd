@@ -1,5 +1,5 @@
 /**
- * Modelo para la entidad Categoría
+ * Modelo para la entidad Contrato
  */
 export interface Contrato {
   id_contrato: string; // UUID
@@ -17,7 +17,7 @@ export interface Contrato {
 }
 
 /**
- * Modelo para crear una nueva categoría
+ * Modelo para crear una nueva contrato
  */
 export interface CreateContratoRequest {
   cliente_id: string;
@@ -29,7 +29,7 @@ export interface CreateContratoRequest {
 }
 
 /**
- * Modelo para actualizar una categoría
+ * Modelo para actualizar una contrato
  */
 export interface UpdateContratoRequest {
   cliente_id?: string;
@@ -41,7 +41,7 @@ export interface UpdateContratoRequest {
 }
 
 /**
- * Modelo para filtros de categorías
+ * Modelo para filtros de contratos
  */
 export interface ContratoFilters {
   nombre?: string;
@@ -49,7 +49,7 @@ export interface ContratoFilters {
 }
 
 /**
- * Modelo para respuesta paginada de categorías
+ * Modelo para respuesta paginada de contratos
  */
 export interface ContratoListResponse {
   data: Contrato[];
