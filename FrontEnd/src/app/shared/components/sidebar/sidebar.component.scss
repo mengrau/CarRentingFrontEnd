@@ -280,3 +280,14 @@ nav::-webkit-scrollbar-thumb {
     transform: translateX(-100%); // hidden
   }
 }
+
+.logout {
+  margin-top: 450px; /* 🔥 Esto lo empuja hacia abajo */
+  background-color: #ef4444;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}

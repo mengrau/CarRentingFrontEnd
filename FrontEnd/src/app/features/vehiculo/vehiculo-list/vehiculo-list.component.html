@@ -1,0 +1,320 @@
+<div class="vehiculo-list">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="card-title">Gestión de Vehículos</h2>
+      <button class="btn btn-success" (click)="openCreateModal()">Nuevo Vehículo</button>
+    </div>
+
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por ID..."
+              [(ngModel)]="filters.id"
+              (input)="onFilterChange()"
+              name="filterId"
+            />
+          </div>
+          <div class="col-md-3">
+            <select
+              class="form-control"
+              [(ngModel)]="filters.disponible"
+              (change)="onFilterChange()"
+              name="filterDisponible"
+            >
+              <option value="">Todos los estados</option>
+              <option value="true">Disponibles</option>
+              <option value="false">No disponibles</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de vehículos -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Tipo</th>
+              <th>Placa</th>
+              <th>Disponible</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="7" class="text-center">Cargando...</td>
+            </tr>
+            <tr *ngIf="!loading && vehiculosFiltrados.length === 0">
+              <td colspan="7" class="text-center">No hay vehículos disponibles</td>
+            </tr>
+
+            <!-- Mostrar solo la página actual -->
+            <tr
+              *ngFor="
+                let vehiculo of vehiculosFiltrados
+                  | slice: (currentPage - 1) * pageSize : currentPage * pageSize
+              "
+            >
+              <td>{{ vehiculo.id }}</td>
+              <td>{{ vehiculo.marca }}</td>
+              <td>{{ vehiculo.modelo }}</td>
+              <td>{{ vehiculo.tipo_id || '-' }}</td>
+              <td>{{ vehiculo.placa || '-' }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-success]="vehiculo.disponible"
+                  [class.badge-danger]="!vehiculo.disponible"
+                >
+                  {{ vehiculo.disponible ? 'Disponible' : 'No disponible' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(vehiculo)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteVehiculo(vehiculo)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination mt-3" *ngIf="totalPages > 1">
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          Anterior
+        </button>
+        <span class="mx-3"> Página {{ currentPage }} de {{ totalPages }} </span>
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear vehículo -->
+  <div
+    class="modal fade"
+    [class.show]="showCreateModal"
+    [style.display]="showCreateModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Vehículo</h5>
+          <button type="button" class="close" (click)="closeModalCreate()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="createVehiculo()">
+            <div class="form-group">
+              <label for="marcaCreate">Marca *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="marcaCreate"
+                [(ngModel)]="vehiculoFormCreate.marca"
+                name="marcaCreate"
+                required
+                placeholder="Ingrese la marca"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modeloCreate">Modelo *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="modeloCreate"
+                [(ngModel)]="vehiculoFormCreate.modelo"
+                name="modeloCreate"
+                required
+                placeholder="Ingrese el modelo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="tipoCreate">Tipo (ID)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="tipoCreate"
+                [(ngModel)]="vehiculoFormCreate.tipo_id"
+                name="tipoCreate"
+                placeholder="ID del tipo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="placaCreate">Placa</label>
+              <input
+                type="text"
+                class="form-control"
+                id="placaCreate"
+                [(ngModel)]="vehiculoFormCreate.placa"
+                name="placaCreate"
+                placeholder="Ingrese la placa"
+              />
+            </div>
+
+            <div class="form-group form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="disponibleCreate"
+                [(ngModel)]="vehiculoFormCreate.disponible"
+                name="disponibleCreate"
+              />
+              <label class="form-check-label" for="disponibleCreate">Disponible</label>
+            </div>
+
+            <div class="form-group">
+              <label for="id_usuario_creacion">ID Usuario creación</label>
+              <input
+                type="text"
+                class="form-control"
+                id="id_usuario_creacion"
+                [(ngModel)]="vehiculoFormCreate.id_usuario_creacion"
+                name="id_usuario_creacion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar vehículo -->
+  <div
+    class="modal fade"
+    [class.show]="showEditModal"
+    [style.display]="showEditModal ? 'block' : 'none'"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Vehículo</h5>
+          <button type="button" class="close" (click)="closeModalEdit()">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="updateVehiculo()">
+            <div class="form-group">
+              <label for="marcaEdit">Marca *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="marcaEdit"
+                [(ngModel)]="vehiculoFormEdit.marca"
+                name="marcaEdit"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modeloEdit">Modelo *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="modeloEdit"
+                [(ngModel)]="vehiculoFormEdit.modelo"
+                name="modeloEdit"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="tipoEdit">Tipo (ID)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="tipoEdit"
+                [(ngModel)]="vehiculoFormEdit.tipo_id"
+                name="tipoEdit"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="placaEdit">Placa</label>
+              <input
+                type="text"
+                class="form-control"
+                id="placaEdit"
+                [(ngModel)]="vehiculoFormEdit.placa"
+                name="placaEdit"
+              />
+            </div>
+
+            <div class="form-group form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="disponibleEdit"
+                [(ngModel)]="vehiculoFormEdit.disponible"
+                name="disponibleEdit"
+              />
+              <label class="form-check-label" for="disponibleEdit">Disponible</label>
+            </div>
+
+            <div class="form-group">
+              <label for="id_usuario_edicion">ID Usuario edición</label>
+              <input
+                type="text"
+                class="form-control"
+                id="id_usuario_edicion"
+                [(ngModel)]="vehiculoFormEdit.id_usuario_edicion"
+                name="id_usuario_edicion"
+                readonly
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModalEdit()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

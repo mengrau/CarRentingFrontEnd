@@ -1,5 +1,5 @@
 /**
- * Modelo para la entidad Categoría
+ * Modelo para la entidad Cliente
  */
 export interface Cliente {
   id_cliente: string; // UUID
@@ -15,7 +15,7 @@ export interface Cliente {
 }
 
 /**
- * Modelo para crear una nueva categoría
+ * Modelo para crear un nuevo cliente
  */
 export interface CreateClienteRequest {
   nombre: string;
@@ -25,7 +25,7 @@ export interface CreateClienteRequest {
 }
 
 /**
- * Modelo para actualizar una categoría
+ * Modelo para actualizar una cliente
  */
 export interface UpdateClienteRequest {
   nombre?: string;
@@ -35,7 +35,7 @@ export interface UpdateClienteRequest {
 }
 
 /**
- * Modelo para filtros de categorías
+ * Modelo para filtros de clientes
  */
 export interface ClienteFilters {
   nombre?: string;
@@ -43,7 +43,7 @@ export interface ClienteFilters {
 }
 
 /**
- * Modelo para respuesta paginada de categorías
+ * Modelo para respuesta paginada de clientes
  */
 export interface ClienteListResponse {
   data: Cliente[];

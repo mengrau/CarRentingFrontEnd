@@ -38,5 +38,37 @@ export const routes: Routes = [
         (m) => m.EmpleadoListComponent,
       ),
   },
+  {
+    path: 'pago',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/pago/pago-list/pago-list.component').then(
+        (m) => m.PagoListComponent,
+      ),
+  },
+   {
+    path: 'tipoVehiculo',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/tipoVehiculo/tipoVehiculo-list/tipoVehiculo-list.component').then(
+        (m) => m.TipoVehiculoListComponent,
+      ),
+  },
+  {
+    path: 'usuario',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/usuario/usuario-list/usuario-list.component').then(
+        (m) => m.UsuarioListComponent,
+      ),
+  },
+  {
+    path: 'vehiculo',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/vehiculo/vehiculo-list/vehiculo-list.component').then(
+        (m) => m.VehiculoListComponent,
+      ),
+  },
   { path: '**', redirectTo: 'login' },
 ];
