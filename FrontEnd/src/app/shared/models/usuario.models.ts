@@ -1,5 +1,5 @@
 /**
- * Modelo para la entidad Categoría
+ * Modelo para la entidad Usuario
  */
 export interface Usuario {
   id_usuario: string; // UUID
@@ -15,7 +15,7 @@ export interface Usuario {
 }
 
 /**
- * Modelo para crear una nueva categoría
+ * Modelo para crear un nuevo usuario
  */
 export interface CreateUsuarioRequest {
   username: string;
@@ -26,7 +26,7 @@ export interface CreateUsuarioRequest {
 }
 
 /**
- * Modelo para actualizar una categoría
+ * Modelo para actualizar un usuario
  */
 export interface UpdateUsuarioRequest {
   username?: string;
@@ -37,14 +37,14 @@ export interface UpdateUsuarioRequest {
 }
 
 /**
- * Modelo para filtros de categorías
+ * Modelo para filtros de usuario
  */
 export interface UsuarioFilters {
   username?: string;
 }
 
 /**
- * Modelo para respuesta paginada de categorías
+ * Modelo para respuesta paginada de usuarios
  */
 export interface UsuarioListResponse {
   data: Usuario[];

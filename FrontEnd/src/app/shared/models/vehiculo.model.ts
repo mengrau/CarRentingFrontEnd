@@ -1,5 +1,5 @@
 /**
- * Modelo para la entidad Categoría
+ * Modelo para la entidad Vehiculo
  */
 export interface Vehiculo {
   id_vehiculo: string; // UUID
@@ -16,7 +16,7 @@ export interface Vehiculo {
 }
 
 /**
- * Modelo para crear una nueva categoría
+ * Modelo para crear un nuevo vehiculo
  */
 export interface CreateVehiculoRequest {
   marca: string;
@@ -28,7 +28,7 @@ export interface CreateVehiculoRequest {
 }
 
 /**
- * Modelo para actualizar una categoría
+ * Modelo para actualizar un vehiculo
  */
 export interface UpdateVehiculoRequest {
   marca?: string;
@@ -40,7 +40,7 @@ export interface UpdateVehiculoRequest {
 }
 
 /**
- * Modelo para filtros de categorías
+ * Modelo para filtros de vehiculos
  */
 export interface VehiculoFilters {
   id?: string;
@@ -48,7 +48,7 @@ export interface VehiculoFilters {
 }
 
 /**
- * Modelo para respuesta paginada de categorías
+ * Modelo para respuesta paginada de vehiculos
  */
 export interface VehiculoListResponse {
   data: Vehiculo[];
