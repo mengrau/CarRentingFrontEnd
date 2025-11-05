@@ -12,7 +12,7 @@ interface LoginResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private base = 'http://127.0.0.1:8000/auth'; // <-- ajusta aquí
+  private base = 'http://127.0.0.1:8000/auth';
 
   constructor(
     private http: HttpClient,
@@ -22,20 +22,18 @@ export class AuthService {
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.base}/login`, { username, password }).pipe(
       tap((res) => {
-        if (res?.access_token) {
-          localStorage.setItem('access_token', res.access_token);
-        }
       }),
     );
   }
 
   logout(): void {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
     this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem('token');
   }
 
   isLoggedIn(): boolean {
