@@ -58,8 +58,8 @@
               <td>{{ contrato.cliente_id || '-' }}</td>
               <td>{{ contrato.vehiculo_id || '-' }}</td>
               <td>{{ contrato.empleado_id || '-' }}</td>
-              <td>{{ contrato.fecha_inicio ? (contrato.fecha_inicio | date:'short') : '-' }}</td>
-              <td>{{ contrato.fecha_fin ? (contrato.fecha_fin | date:'short') : '-' }}</td>
+              <td>{{ contrato.fecha_inicio ? (contrato.fecha_inicio | date: 'short') : '-' }}</td>
+              <td>{{ contrato.fecha_fin ? (contrato.fecha_fin | date: 'short') : '-' }}</td>
               <td>
                 <span
                   class="badge"
@@ -111,7 +111,9 @@
     tabindex="-1"
     role="dialog"
   >
-    <div class="modal-dialog" role="document">
+    <!-- modal-lg o modal-xl según prefieras; modal-dialog-scrollable ayuda pero
+       como gestionas el show manualmente, también forzamos el scroll dentro -->
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Nuevo Contrato</h5>
@@ -120,103 +122,153 @@
           </button>
         </div>
 
+        <!-- modal-body: contiene un contenedor scrolleable (no tocar header/footer) -->
         <div class="modal-body">
-          <form (ngSubmit)="createContrato()">
-            <div class="form-group">
-              <label for="clienteIdCreate">Cliente ID *</label>
-              <input
-                type="text"
-                class="form-control"
-                id="clienteIdCreate"
-                [(ngModel)]="contratoFormCreate.cliente_id"
-                name="clienteIdCreate"
-                required
-                placeholder="ID del cliente"
-              />
-            </div>
+          <div class="modal-body-scroll">
+            <div class="scroll-content">
+              <form (ngSubmit)="createContratoWithPago()">
+                <div class="form-group">
+                  <label for="clienteIdCreate">Cliente ID *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="clienteIdCreate"
+                    [(ngModel)]="contratoFormCreate.cliente_id"
+                    name="clienteIdCreate"
+                    required
+                    placeholder="ID del cliente"
+                  />
+                </div>
 
-            <div class="form-group">
-              <label for="vehiculoIdCreate">Vehículo ID *</label>
-              <input
-                type="text"
-                class="form-control"
-                id="vehiculoIdCreate"
-                [(ngModel)]="contratoFormCreate.vehiculo_id"
-                name="vehiculoIdCreate"
-                required
-                placeholder="ID del vehículo"
-              />
-            </div>
+                <div class="form-group">
+                  <label for="vehiculoIdCreate">Vehículo ID *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="vehiculoIdCreate"
+                    [(ngModel)]="contratoFormCreate.vehiculo_id"
+                    name="vehiculoIdCreate"
+                    required
+                    placeholder="ID del vehículo"
+                  />
+                </div>
 
-            <div class="form-group">
-              <label for="empleadoIdCreate">Empleado ID *</label>
-              <input
-                type="text"
-                class="form-control"
-                id="empleadoIdCreate"
-                [(ngModel)]="contratoFormCreate.empleado_id"
-                name="empleadoIdCreate"
-                required
-                placeholder="ID del empleado"
-              />
-            </div>
+                <div class="form-group">
+                  <label for="empleadoIdCreate">Empleado ID *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleadoIdCreate"
+                    [(ngModel)]="contratoFormCreate.empleado_id"
+                    name="empleadoIdCreate"
+                    required
+                    placeholder="ID del empleado"
+                  />
+                </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="fechaInicioCreate">Fecha inicio *</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  id="fechaInicioCreate"
-                  [(ngModel)]="contratoFormCreate.fecha_inicio"
-                  name="fechaInicioCreate"
-                  required
-                />
-              </div>
-              <div class="form-group col-md-6">
-                <label for="fechaFinCreate">Fecha fin</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  id="fechaFinCreate"
-                  [(ngModel)]="contratoFormCreate.fecha_fin"
-                  name="fechaFinCreate"
-                />
-              </div>
-            </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="fechaInicioCreate">Fecha inicio *</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="fechaInicioCreate"
+                      [(ngModel)]="contratoFormCreate.fecha_inicio"
+                      name="fechaInicioCreate"
+                      required
+                    />
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="fechaFinCreate">Fecha fin</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="fechaFinCreate"
+                      [(ngModel)]="contratoFormCreate.fecha_fin"
+                      name="fechaFinCreate"
+                    />
+                  </div>
+                </div>
 
-            <div class="form-group">
-              <div class="form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="activoCreate"
-                  [(ngModel)]="contratoFormCreate.activo"
-                  name="activoCreate"
-                />
-                <label class="form-check-label" for="activoCreate">Contrato activo</label>
-              </div>
-            </div>
+                <div class="form-group">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="activoCreate"
+                      [(ngModel)]="contratoFormCreate.activo"
+                      name="activoCreate"
+                    />
+                    <label class="form-check-label" for="activoCreate">Contrato activo</label>
+                  </div>
+                </div>
 
-            <div class="form-group">
-              <label for="idUsuarioCreacion">ID Usuario creación</label>
-              <input
-                type="text"
-                class="form-control"
-                id="idUsuarioCreacion"
-                [(ngModel)]="contratoFormCreate.id_usuario_creacion"
-                name="idUsuarioCreacion"
-                readonly
-              />
-            </div>
+                <div class="form-group">
+                  <label for="idUsuarioCreacion">ID Usuario creación</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="idUsuarioCreacion"
+                    [(ngModel)]="contratoFormCreate.id_usuario_creacion"
+                    name="idUsuarioCreacion"
+                    readonly
+                  />
+                </div>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary">Crear</button>
+                <hr />
+                <h5>Pago inicial</h5>
+
+                <div class="form-group">
+                  <label for="montoPago">Monto *</label>
+                  <input
+                    id="montoPago"
+                    name="montoPago"
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="pagoFormCreate.monto"
+                    required
+                    placeholder="Ingrese el monto del pago inicial"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="fechaPago">Fecha pago *</label>
+                  <input
+                    id="fechaPago"
+                    name="fechaPago"
+                    type="date"
+                    class="form-control"
+                    [(ngModel)]="pagoFormCreate.fecha_pago"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="idUsuarioCreacionPago">ID Usuario creación (pago)</label>
+                  <input
+                    id="idUsuarioCreacionPago"
+                    name="idUsuarioCreacionPago"
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="pagoFormCreate.id_usuario_creacion"
+                    readonly
+                  />
+                </div>
+
+                <!-- Nota: footer se mantiene fuera del scroll -->
+              </form>
             </div>
-          </form>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
+            Cancelar
+          </button>
+          <!-- submit está en el formulario; añadimos botón que dispare submit -->
+          <button type="button" class="btn btn-primary" (click)="createContratoWithPago()">
+            Crear contrato + pago
+          </button>
         </div>
       </div>
     </div>

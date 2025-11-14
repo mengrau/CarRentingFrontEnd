@@ -20,12 +20,10 @@ export class PagoListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingPago: Pago | null = null;
 
-  // Formularios de creación y edición (coherentes con el backend)
   pagoFormCreate = {
     contrato_id: '',
     monto: '',
@@ -76,7 +74,7 @@ export class PagoListComponent implements OnInit {
   }
 
   onFilterChange(): void {
-    const idFilter = this.filters.id.trim().toLowerCase();    
+    const idFilter = this.filters.id.trim().toLowerCase();
 
     this.pagosFiltrados = this.pagos.filter((p) => {
       const matchId = idFilter ? String(p.id).toLowerCase().includes(idFilter) : true;
@@ -89,7 +87,7 @@ export class PagoListComponent implements OnInit {
   }
 
   clearFilters() {
-    this.filters = { id: ''};
+    this.filters = { id: '' };
     this.pagosFiltrados = [...this.pagos];
     this.totalPages = Math.max(1, Math.ceil(this.pagosFiltrados.length / this.pageSize));
     this.currentPage = 1;
@@ -146,14 +144,20 @@ export class PagoListComponent implements OnInit {
 
   // Crear nuevo pago
   createPago(): void {
-    if (!this.pagoFormCreate.contrato_id || !this.pagoFormCreate.monto || !this.pagoFormCreate.fecha_pago) {
+    if (
+      !this.pagoFormCreate.contrato_id ||
+      !this.pagoFormCreate.monto ||
+      !this.pagoFormCreate.fecha_pago
+    ) {
       alert('Por favor complete los campos obligatorios (contrato, monto, fecha)');
       return;
     }
 
     const newPago: any = {
       contrato_id: this.pagoFormCreate.contrato_id,
-      monto: isNaN(Number(this.pagoFormCreate.monto)) ? this.pagoFormCreate.monto : Number(this.pagoFormCreate.monto),
+      monto: isNaN(Number(this.pagoFormCreate.monto))
+        ? this.pagoFormCreate.monto
+        : Number(this.pagoFormCreate.monto),
       fecha_pago: this.pagoFormCreate.fecha_pago,
       id_usuario_creacion: this.pagoFormCreate.id_usuario_creacion,
     };
@@ -183,7 +187,9 @@ export class PagoListComponent implements OnInit {
     }
 
     const updateData: any = {
-      monto: isNaN(Number(this.pagoFormEdit.monto)) ? this.pagoFormEdit.monto : Number(this.pagoFormEdit.monto),
+      monto: isNaN(Number(this.pagoFormEdit.monto))
+        ? this.pagoFormEdit.monto
+        : Number(this.pagoFormEdit.monto),
       fecha_pago: this.pagoFormEdit.fecha_pago,
       id_usuario_edicion: this.pagoFormEdit.id_usuario_edicion,
     };
@@ -215,4 +221,3 @@ export class PagoListComponent implements OnInit {
     }
   }
 }
-
