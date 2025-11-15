@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PaginationParams } from '../../../core/models/api-response.model';
 import { ContratoService } from '../../../core/services/contrato.service';
+import { PagoService } from '../../../core/services/pago.service';
 import { Contrato } from '../../../shared/models/contrato.model';
 
 @Component({
@@ -36,6 +37,12 @@ export class ContratoListComponent implements OnInit {
     id_usuario_creacion: '',
   };
 
+  pagoFormCreate = {
+    monto: '',
+    fecha_pago: '',
+    id_usuario_creacion: '',
+  };
+
   contratoFormEdit = {
     cliente_id: '',
     vehiculo_id: '',
@@ -51,7 +58,10 @@ export class ContratoListComponent implements OnInit {
     activo: '',
   };
 
-  constructor(private contratoService: ContratoService) {}
+  constructor(
+    private contratoService: ContratoService,
+    private pagoService: PagoService,
+  ) {}
 
   ngOnInit(): void {
     this.loadContratos();
@@ -89,7 +99,8 @@ export class ContratoListComponent implements OnInit {
 
     this.contratosFiltrados = this.contratos.filter((c) => {
       const matchId = c.id.toLowerCase().includes(idFilter);
-      const matchActivo = activoFilter === '' ? true : activoFilter === 'true' ? c.activo : !c.activo;
+      const matchActivo =
+        activoFilter === '' ? true : activoFilter === 'true' ? c.activo : !c.activo;
       return matchId && matchActivo;
     });
   }
@@ -115,6 +126,11 @@ export class ContratoListComponent implements OnInit {
       fecha_inicio: '',
       fecha_fin: '',
       activo: true,
+      id_usuario_creacion: localStorage.getItem('user_id') ?? '',
+    };
+    this.pagoFormCreate = {
+      monto: '',
+      fecha_pago: '',
       id_usuario_creacion: localStorage.getItem('user_id') ?? '',
     };
     this.showCreateModal = true;
@@ -162,7 +178,92 @@ export class ContratoListComponent implements OnInit {
     };
   }
 
-  // Crear nuevo contrato
+  createContratoWithPago(): void {
+    // validaciones contrato + pago
+    if (
+      !this.contratoFormCreate.cliente_id ||
+      !this.contratoFormCreate.vehiculo_id ||
+      !this.contratoFormCreate.empleado_id ||
+      !this.contratoFormCreate.fecha_inicio
+    ) {
+      alert('Por favor complete los campos obligatorios del contrato');
+      return;
+    }
+
+    // si quieres forzar que siempre se registre un pago inicial:
+    if (!this.pagoFormCreate.monto || !this.pagoFormCreate.fecha_pago) {
+      alert('Por favor complete los campos obligatorios del pago inicial');
+      return;
+    }
+
+    const newContrato = {
+      cliente_id: this.contratoFormCreate.cliente_id,
+      vehiculo_id: this.contratoFormCreate.vehiculo_id,
+      empleado_id: this.contratoFormCreate.empleado_id,
+      fecha_inicio: new Date(this.contratoFormCreate.fecha_inicio).toISOString(),
+      fecha_fin: new Date(this.contratoFormCreate.fecha_fin).toISOString(),
+      activo: this.contratoFormCreate.activo,
+      id_usuario_creacion: this.contratoFormCreate.id_usuario_creacion,
+    };
+
+    // crear contrato primero
+    this.contratoService.createContrato(newContrato).subscribe({
+      next: (contratoCreado: any) => {
+        const contratoId = contratoCreado.id;
+        // crear pago con el id retornado
+        this.createPagoAutomatico(contratoId);
+      },
+      error: (error) => {
+        console.error('Error al crear contrato:', error);
+        alert('Error al crear el contrato');
+      },
+    });
+  }
+  
+  private createPagoAutomatico(contratoId: string): void {
+    const newPago: any = {
+      contrato_id: contratoId,
+      monto: isNaN(Number(this.pagoFormCreate.monto))
+        ? this.pagoFormCreate.monto
+        : Number(this.pagoFormCreate.monto),
+      fecha_pago: new Date(this.pagoFormCreate.fecha_pago).toISOString(),
+      id_usuario_creacion: this.pagoFormCreate.id_usuario_creacion,
+    };
+
+    this.pagoService.createPago(newPago).subscribe({
+      next: () => {
+        // refrescar listas y cerrar modal
+        this.loadContratos();
+        // si tienes loadPagos en otro componente, usa evento o shared service para refrescar
+        this.closeModalCreate();
+        alert('Contrato y pago creados correctamente');
+      },
+      error: (error) => {
+        console.error('Error al crear pago:', error);
+        // COMPENSACIÓN simple: opcionalmente eliminar el contrato recién creado
+        // (OJO: esto puede tener implicaciones; ver recomendación backend abajo)
+        if (confirm('Error al crear el pago. ¿Desea eliminar el contrato creado para evitar estados inconsistentes?')) {
+          // intenta eliminar el contrato creado
+          this.contratoService.deleteContrato(contratoId).subscribe({
+            next: () => {
+              alert('Contrato eliminado por inconsistencia en pago');
+              this.loadContratos();
+              this.closeModalCreate();
+            },
+            error: (delErr) => {
+              console.error('Error al eliminar contrato compensatorio:', delErr);
+              alert('Pago falló y no se pudo eliminar el contrato. Contacte al administrador.');
+            },
+          });
+        } else {
+          alert('Pago falló. El contrato permanece creado — puede registrar el pago manualmente luego.');
+          this.loadContratos();
+          this.closeModalCreate();
+        }
+      },
+    });
+  }
+
   createContrato(): void {
     if (
       !this.contratoFormCreate.cliente_id ||
@@ -196,7 +297,6 @@ export class ContratoListComponent implements OnInit {
     });
   }
 
-  // Actualizar contrato existente
   updateContrato(): void {
     if (!this.editingContrato) {
       alert('No hay contrato seleccionado para editar');
