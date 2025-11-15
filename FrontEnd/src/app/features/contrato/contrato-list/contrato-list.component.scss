@@ -139,3 +139,14 @@
   margin-bottom: 0;
   font-weight: normal;
 }
+
+.modal-body-scroll {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.scroll-content {
+  padding-right: 20px;
+}
+
+
