@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router'; // opcional: sólo si usas routerLink en el template
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], // <-- aquí
+  imports: [CommonModule, FormsModule, RouterModule],
 })
 export class LoginComponent {
   username = '';
@@ -29,15 +28,12 @@ export class LoginComponent {
     this.auth.login(this.username, this.password).subscribe({
       next: (response) => {
         this.loading = false;
-        // Guarda el token en localStorage
         localStorage.setItem('token', response.access_token);
         localStorage.setItem('user_id', response.user_id);
-        // Redirige al dashboard
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.loading = false;
-        // Muestra el error que devuelva el backend
         this.error = err.error?.detail || 'Credenciales inválidas';
       },
     });

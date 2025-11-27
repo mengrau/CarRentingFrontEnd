@@ -10,7 +10,7 @@ import { Cliente } from '../../../shared/models/cliente.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './cliente-list.component.html',
-  styleUrls: ['./cliente-list.component.scss'], // 👈 plural y entre corchetes
+  styleUrls: ['./cliente-list.component.scss'],
 })
 export class ClienteListComponent implements OnInit {
   clientes: Cliente[] = [];
@@ -20,7 +20,6 @@ export class ClienteListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingCliente: Cliente | null = null;
@@ -56,7 +55,6 @@ export class ClienteListComponent implements OnInit {
       limit: this.pageSize,
     };
 
-    // 👇 Conversión del filtro
     const filtersToSend = {
       nombre: this.filters.nombre,
       activo: this.filters.activo === '' ? undefined : this.filters.activo === 'true',
@@ -147,9 +145,7 @@ export class ClienteListComponent implements OnInit {
     };
   }
 
-  // Crear nuevo cliente (antes rama "else" de saveCliente)
   createCliente(): void {
-    // validación simple
     if (!this.clienteFormCreate.nombre.trim()) {
       alert('El nombre es requerido');
       return;
@@ -175,7 +171,6 @@ export class ClienteListComponent implements OnInit {
     });
   }
 
-  // Actualizar cliente existente (antes rama "if" de saveCliente)
   updateCliente(): void {
     if (!this.editingCliente) {
       alert('No hay cliente seleccionado para editar');

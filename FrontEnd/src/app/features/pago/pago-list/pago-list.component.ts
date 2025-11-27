@@ -37,7 +37,6 @@ export class PagoListComponent implements OnInit {
     id_usuario_edicion: '',
   };
 
-  // Filtros
   filters = {
     id: '',
   };
@@ -81,7 +80,6 @@ export class PagoListComponent implements OnInit {
       return matchId;
     });
 
-    // ajustar paginación local si corresponde
     this.totalPages = Math.max(1, Math.ceil(this.pagosFiltrados.length / this.pageSize));
     this.currentPage = 1;
   }
@@ -142,7 +140,6 @@ export class PagoListComponent implements OnInit {
     };
   }
 
-  // Crear nuevo pago
   createPago(): void {
     if (
       !this.pagoFormCreate.contrato_id ||
@@ -174,7 +171,6 @@ export class PagoListComponent implements OnInit {
     });
   }
 
-  // Actualizar pago existente
   updatePago(): void {
     if (!this.editingPago) {
       alert('No hay pago seleccionado para editar');
