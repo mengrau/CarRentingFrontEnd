@@ -6,7 +6,6 @@
     </div>
 
     <div class="card-body">
-      <!-- Filtros -->
       <div class="filters mb-3">
         <div class="row">
           <div class="col-md-4">
@@ -31,7 +30,6 @@
         </div>
       </div>
 
-      <!-- Tabla de contratos -->
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -82,7 +80,6 @@
         </table>
       </div>
 
-      <!-- Paginación -->
       <div class="pagination mt-3" *ngIf="totalPages > 1">
         <button
           class="btn btn-secondary"
@@ -103,7 +100,6 @@
     </div>
   </div>
 
-  <!-- Modal para crear contrato -->
   <div
     class="modal fade"
     [class.show]="showCreateModal"
@@ -111,8 +107,6 @@
     tabindex="-1"
     role="dialog"
   >
-    <!-- modal-lg o modal-xl según prefieras; modal-dialog-scrollable ayuda pero
-       como gestionas el show manualmente, también forzamos el scroll dentro -->
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -122,7 +116,6 @@
           </button>
         </div>
 
-        <!-- modal-body: contiene un contenedor scrolleable (no tocar header/footer) -->
         <div class="modal-body">
           <div class="modal-body-scroll">
             <div class="scroll-content">
@@ -254,8 +247,6 @@
                     readonly
                   />
                 </div>
-
-                <!-- Nota: footer se mantiene fuera del scroll -->
               </form>
             </div>
           </div>
@@ -265,7 +256,7 @@
           <button type="button" class="btn btn-secondary" (click)="closeModalCreate()">
             Cancelar
           </button>
-          <!-- submit está en el formulario; añadimos botón que dispare submit -->
+
           <button type="button" class="btn btn-primary" (click)="createContratoWithPago()">
             Crear contrato + pago
           </button>
@@ -274,7 +265,6 @@
     </div>
   </div>
 
-  <!-- Modal para editar contrato -->
   <div
     class="modal fade"
     [class.show]="showEditModal"

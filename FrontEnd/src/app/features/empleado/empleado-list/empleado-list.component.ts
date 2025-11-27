@@ -20,12 +20,10 @@ export class EmpleadoListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingEmpleado: Empleado | null = null;
 
-  // Formularios de creación y edición (campos de Empleado)
   empleadoFormCreate = {
     nombre: '',
     email: '',
@@ -42,7 +40,6 @@ export class EmpleadoListComponent implements OnInit {
     id_usuario_edicion: '',
   };
 
-  // filtros por nombre y activo (no por id)
   filters = {
     nombre: '',
     activo: '',
@@ -61,7 +58,6 @@ export class EmpleadoListComponent implements OnInit {
       limit: this.pageSize,
     };
 
-    // Conversión del filtro (nombre + activo)
     const filtersToSend = {
       nombre: this.filters.nombre,
       activo: this.filters.activo === '' ? undefined : this.filters.activo === 'true',
@@ -153,9 +149,7 @@ export class EmpleadoListComponent implements OnInit {
     };
   }
 
-  // Crear nuevo empleado
   createEmpleado(): void {
-    // validación simple: nombre requerido
     if (!this.empleadoFormCreate.nombre || !this.empleadoFormCreate.nombre.trim()) {
       alert('El nombre es requerido');
       return;
@@ -181,14 +175,12 @@ export class EmpleadoListComponent implements OnInit {
     });
   }
 
-  // Actualizar empleado existente
   updateEmpleado(): void {
     if (!this.editingEmpleado) {
       alert('No hay empleado seleccionado para editar');
       return;
     }
 
-    // validación simple: nombre requerido
     if (!this.empleadoFormEdit.nombre || !this.empleadoFormEdit.nombre.trim()) {
       alert('El nombre es requerido');
       return;

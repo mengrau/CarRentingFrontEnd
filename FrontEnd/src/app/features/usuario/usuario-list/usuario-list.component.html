@@ -6,7 +6,6 @@
     </div>
 
     <div class="card-body">
-      <!-- Filtros -->
       <div class="filters mb-3">
         <div class="row">
           <div class="col-md-4">
@@ -20,14 +19,11 @@
           </div>
 
           <div class="col-md-2">
-            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">
-              Limpiar
-            </button>
+            <button class="btn btn-secondary btn-limpiar" (click)="clearFilters()">Limpiar</button>
           </div>
         </div>
       </div>
 
-      <!-- Tabla de usuarios -->
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -72,7 +68,6 @@
         </table>
       </div>
 
-      <!-- Paginación -->
       <div class="pagination mt-3" *ngIf="totalPages > 1">
         <button
           class="btn btn-secondary"
@@ -93,7 +88,6 @@
     </div>
   </div>
 
-  <!-- Modal para crear usuario -->
   <div
     class="modal fade"
     [class.show]="showCreateModal"
@@ -177,7 +171,6 @@
     </div>
   </div>
 
-  <!-- Modal para editar usuario -->
   <div
     class="modal fade"
     [class.show]="showEditModal"
@@ -273,6 +266,3 @@
     </div>
   </div>
 </div>
-
-
-

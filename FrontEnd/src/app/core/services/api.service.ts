@@ -12,9 +12,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Realiza una petición GET
-   */
   get<T>(endpoint: string, params?: any): Observable<T> {
     let httpParams = new HttpParams();
     if (params) {
@@ -27,16 +24,12 @@ export class ApiService {
     return this.http.get<T>(`${this.baseUrl}${endpoint}`, { params: httpParams });
   }
 
-  /**
-   * Realiza una petición GET para obtener datos paginados
-   */
   getPaginated<T>(endpoint: string, pagination: PaginationParams, filters?: any): Observable<T[]> {
     let httpParams = new HttpParams();
 
-    // calcular skip correctamente:
-    const page = pagination.page ?? 1; // por defecto 1 si viene undefined
-    const limit = pagination.limit ?? 10; // por defecto 10
-    // asume que page es 1-based. Si en tu app page es 0-based, usa page * limit
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 10;
+
     const skip = Math.max(0, page - 1) * limit;
 
     httpParams = httpParams.set('skip', skip.toString());
@@ -50,7 +43,6 @@ export class ApiService {
       httpParams = httpParams.set('order', pagination.order);
     }
 
-    // Agregar filtros
     if (filters) {
       Object.keys(filters).forEach((key) => {
         if (filters[key] !== null && filters[key] !== undefined) {
@@ -62,32 +54,20 @@ export class ApiService {
     return this.http.get<T[]>(`${this.baseUrl}${endpoint}`, { params: httpParams });
   }
 
-  /**
-   * Realiza una petición POST
-   */
   post<T>(endpoint: string, data: any): Observable<T> {
     console.log('ApiService: Realizando POST a:', `${this.baseUrl}${endpoint}`);
     console.log('ApiService: Datos enviados:', data);
     return this.http.post<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * Realiza una petición PUT
-   */
   put<T>(endpoint: string, data: any): Observable<T> {
     return this.http.put<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * Realiza una petición PATCH
-   */
   patch<T>(endpoint: string, data: any): Observable<T> {
     return this.http.patch<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * Realiza una petición DELETE
-   */
   delete<T>(endpoint: string): Observable<T> {
     return this.http.delete<T>(`${this.baseUrl}${endpoint}`);
   }
