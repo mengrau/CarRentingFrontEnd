@@ -1,16 +1,18 @@
 import 'zone.js';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-}).catch((err) => console.error(err));
+});
+
+
