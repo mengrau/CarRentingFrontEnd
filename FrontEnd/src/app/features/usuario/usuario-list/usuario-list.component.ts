@@ -20,12 +20,10 @@ export class UsuarioListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingUsuario: Usuario | null = null;
 
-  // Formularios coherentes con tu HTML
   usuarioFormCreate = {
     username: '',
     rol: 'admin',
@@ -41,7 +39,6 @@ export class UsuarioListComponent implements OnInit {
     id_usuario_edicion: '',
   };
 
-  // Filtros (solo por username)
   filters = {
     username: '',
   };
@@ -77,12 +74,11 @@ export class UsuarioListComponent implements OnInit {
     });
   }
 
-  // Filtrado local
   onFilterChange(): void {
     const username = (this.filters.username || '').toLowerCase();
 
     this.usuariosFiltrados = this.usuarios.filter((u) =>
-      ((u as any).username || '').toLowerCase().includes(username)
+      ((u as any).username || '').toLowerCase().includes(username),
     );
 
     this.totalPages = Math.max(1, Math.ceil(this.usuariosFiltrados.length / this.pageSize));
@@ -103,7 +99,6 @@ export class UsuarioListComponent implements OnInit {
     }
   }
 
-  // --- Modales ---
   openCreateModal(): void {
     this.editingUsuario = null;
     this.usuarioFormCreate = {
@@ -150,7 +145,6 @@ export class UsuarioListComponent implements OnInit {
     };
   }
 
-  // --- CRUD ---
   createUsuario(): void {
     if (!this.usuarioFormCreate.username) {
       alert('Por favor complete el campo obligatorio: username');

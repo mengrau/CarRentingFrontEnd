@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { VehiculoService } from '../../core/services/vehiculo.service';
@@ -33,7 +26,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('barCanvas', { static: false }) barCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pieCanvas', { static: false }) pieCanvas!: ElementRef<HTMLCanvasElement>;
 
-  // flags para coordinar datos + vista
   private resumenLoaded = false;
   private vehiculosLoaded = false;
   private viewInitialized = false;
@@ -43,7 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private dashboardService: DashboardService,
-    private vehiculoService: VehiculoService
+    private vehiculoService: VehiculoService,
   ) {}
 
   ngOnInit(): void {
@@ -52,10 +44,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // La vista (y los canvas) ya existen
     this.viewInitialized = true;
 
-    // Si los datos ya llegaron antes del AfterViewInit, crear los charts ahora
     if (this.resumenLoaded) this.crearGraficoBarras();
     if (this.vehiculosLoaded) this.crearGraficoCircular();
   }
@@ -86,7 +76,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resumenLoaded = true;
         this.loadingResumen = false;
 
-        // crear gráfico solo si el canvas ya existe
         if (this.viewInitialized) {
           this.crearGraficoBarras();
         }
@@ -127,10 +116,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   crearGraficoBarras(): void {
-    // defensivo: asegúrate que el canvas exista y que tengamos datos
     if (!this.barCanvas || !this.resumenLoaded) return;
 
-    // destruir si ya existe
     if (this.barChart) {
       this.barChart.destroy();
       this.barChart = null;
@@ -153,11 +140,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
               'rgba(102,187,106,0.85)',
               'rgba(255,167,38,0.85)',
             ],
-            borderColor: [
-              'rgba(66,165,245,1)',
-              'rgba(102,187,106,1)',
-              'rgba(255,167,38,1)',
-            ],
+            borderColor: ['rgba(66,165,245,1)', 'rgba(102,187,106,1)', 'rgba(255,167,38,1)'],
             borderWidth: 1,
             borderRadius: 6,
             barThickness: 36,
@@ -188,7 +171,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             display: true,
             text: 'Resumen general',
             padding: { top: 6, bottom: 10 },
-            font: { size: 16 }, // sin weight problemático
+            font: { size: 16 },
           },
         },
         scales: {

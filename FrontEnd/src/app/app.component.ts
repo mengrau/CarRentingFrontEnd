@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'; // 👈 importa esto
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent], // 👈 agrégalo aquí
+  imports: [CommonModule, RouterModule, SidebarComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

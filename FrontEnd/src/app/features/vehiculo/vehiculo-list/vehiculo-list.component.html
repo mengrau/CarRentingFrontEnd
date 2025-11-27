@@ -6,7 +6,6 @@
     </div>
 
     <div class="card-body">
-      <!-- Filtros -->
       <div class="filters mb-3">
         <div class="row">
           <div class="col-md-4">
@@ -37,7 +36,6 @@
         </div>
       </div>
 
-      <!-- Tabla de vehículos -->
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -59,7 +57,6 @@
               <td colspan="7" class="text-center">No hay vehículos disponibles</td>
             </tr>
 
-            <!-- Mostrar solo la página actual -->
             <tr
               *ngFor="
                 let vehiculo of vehiculosFiltrados
@@ -93,7 +90,6 @@
         </table>
       </div>
 
-      <!-- Paginación -->
       <div class="pagination mt-3" *ngIf="totalPages > 1">
         <button
           class="btn btn-secondary"
@@ -114,7 +110,6 @@
     </div>
   </div>
 
-  <!-- Modal para crear vehículo -->
   <div
     class="modal fade"
     [class.show]="showCreateModal"
@@ -218,7 +213,6 @@
     </div>
   </div>
 
-  <!-- Modal para editar vehículo -->
   <div
     class="modal fade"
     [class.show]="showEditModal"

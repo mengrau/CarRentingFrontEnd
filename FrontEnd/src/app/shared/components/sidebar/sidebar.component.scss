@@ -265,7 +265,7 @@ nav::-webkit-scrollbar-thumb {
   background-clip: padding-box;
 }
 
-/* Small screens: overlay behavior */
+
 @media (max-width: 880px) {
   .sidebar {
     position: fixed;
@@ -277,12 +277,12 @@ nav::-webkit-scrollbar-thumb {
   }
 
   .sidebar.collapsed {
-    transform: translateX(-100%); // hidden
+    transform: translateX(-100%); 
   }
 }
 
 .logout {
-  margin-top: 450px; /* 🔥 Esto lo empuja hacia abajo */
+  margin-top: 300px; 
   background-color: #ef4444;
   border: none;
   color: white;
