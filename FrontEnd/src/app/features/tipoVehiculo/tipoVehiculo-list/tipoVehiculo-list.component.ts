@@ -20,12 +20,10 @@ export class TipoVehiculoListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingTipoVehiculo: TipoVehiculo | null = null;
 
-  // Formularios de creación y edición (coherentes con formularios típicos)
   tipoVehiculoFormCreate = {
     nombre: '',
     descripcion: '',
@@ -40,8 +38,6 @@ export class TipoVehiculoListComponent implements OnInit {
     id_usuario_edicion: '',
   };
 
-  // Filtros: búsqueda por id o por nombre (una sola caja)
-  // filtros (igual que en Cliente)
   filters = {
     nombre: '',
     activo: '',
@@ -60,7 +56,6 @@ export class TipoVehiculoListComponent implements OnInit {
       limit: this.pageSize,
     };
 
-    // 👇 Conversión del filtro (mismo patrón que en Cliente)
     const filtersToSend = {
       nombre: this.filters.nombre,
       activo: this.filters.activo === '' ? undefined : this.filters.activo === 'true',
@@ -149,7 +144,6 @@ export class TipoVehiculoListComponent implements OnInit {
     };
   }
 
-  // Crear nuevo tipoVehiculo
   createTipoVehiculo(): void {
     if (!this.tipoVehiculoFormCreate.nombre) {
       alert('Por favor complete los campos obligatorios (nombre)');
@@ -175,7 +169,6 @@ export class TipoVehiculoListComponent implements OnInit {
     });
   }
 
-  // Actualizar tipoVehiculo existente
   updateTipoVehiculo(): void {
     if (!this.editingTipoVehiculo) {
       alert('No hay tipo de vehículo seleccionado para editar');

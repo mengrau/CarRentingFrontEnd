@@ -6,7 +6,6 @@
     </div>
 
     <div class="card-body">
-      <!-- Filtros -->
       <div class="filters mb-5">
         <div class="row">
           <div class="col-md-4">
@@ -25,7 +24,6 @@
         </div>
       </div>
 
-      <!-- Tabla de pagos -->
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -47,22 +45,17 @@
             <tr *ngFor="let pago of pagosFiltrados">
               <td>{{ pago.id }}</td>
               <td>{{ pago.contrato_id }}</td>
-              <td>{{ pago.monto !== undefined ? (pago.monto) : '-' }}</td>
+              <td>{{ pago.monto !== undefined ? pago.monto : '-' }}</td>
               <td>{{ pago.fecha_pago ? (pago.fecha_pago | date: 'short') : '-' }}</td>
               <td>
-                <button class="btn btn-sm btn-primary" (click)="openEditModal(pago)">
-                  Editar
-                </button>
-                <button class="btn btn-sm btn-danger" (click)="deletePago(pago)">
-                  Eliminar
-                </button>
+                <button class="btn btn-sm btn-primary" (click)="openEditModal(pago)">Editar</button>
+                <button class="btn btn-sm btn-danger" (click)="deletePago(pago)">Eliminar</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Paginación -->
       <div class="pagination mt-3" *ngIf="totalPages > 1">
         <button
           class="btn btn-secondary"
@@ -83,7 +76,6 @@
     </div>
   </div>
 
-  <!-- Modal para crear pago -->
   <div
     class="modal fade"
     [class.show]="showCreateModal"
@@ -165,7 +157,6 @@
     </div>
   </div>
 
-  <!-- Modal para editar pago -->
   <div
     class="modal fade"
     [class.show]="showEditModal"
@@ -234,4 +225,3 @@
     </div>
   </div>
 </div>
-

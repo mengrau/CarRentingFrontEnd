@@ -20,7 +20,6 @@ export class VehiculoListComponent implements OnInit {
   totalPages = 1;
   pageSize = 10;
 
-  // Modal properties
   showCreateModal = false;
   showEditModal = false;
   editingVehiculo: Vehiculo | null = null;
@@ -87,11 +86,7 @@ export class VehiculoListComponent implements OnInit {
     this.vehiculosFiltrados = this.vehiculos.filter((v) => {
       const matchId = v.id.toLowerCase().includes(idFilter);
       const matchDisponible =
-        disponibleFilter === ''
-          ? true
-          : disponibleFilter === 'true'
-          ? v.disponible
-          : !v.disponible;
+        disponibleFilter === '' ? true : disponibleFilter === 'true' ? v.disponible : !v.disponible;
       return matchId && matchDisponible;
     });
   }
